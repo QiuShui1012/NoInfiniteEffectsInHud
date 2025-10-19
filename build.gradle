@@ -156,6 +156,17 @@ tasks.named('jar', Jar).configure {
     finalizedBy 'reobfJar'
 }
 
+tasks.register('sourcesJar', Jar) {
+    from delombok.outputs.files
+    dependsOn delombok
+    archiveClassifier = "sources"
+}
+
+artifacts {
+    archives tasks.jar
+    archives tasks.sourcesJar
+}
+
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
 }
