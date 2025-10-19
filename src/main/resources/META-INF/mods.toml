@@ -61,3 +61,7 @@ mandatory = true
 versionRange = "${minecraft_version_range}"
 ordering = "NONE"
 side = "BOTH"
+
+[mc-publish]
+modrinth = "IV2Z12zP"
+curseforge = 1368557
