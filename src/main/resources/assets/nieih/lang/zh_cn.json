@@ -1,0 +1,12 @@
+{
+  "gui.reset": "重置",
+  "screen.nieih.config.title": "Nieih - 配置",
+  "screen.nieih.confirm.title": "离开页面？",
+  "screen.nieih.confirm.info": "未保存的更改将被丢弃。",
+  "config.nieih.enabled.name": "启用",
+  "config.nieih.enabled.desc": "控制本模组功能的开关",
+  "config.nieih.displayInfinite.name": "显示无限时长",
+  "config.nieih.displayInfinite.desc": "显示无限时长的效果（到底是谁在开启这个选项）",
+  "config.nieih.displayNonInfinite.name": "显示非无限时长",
+  "config.nieih.displayNonInfinite.desc": "显示非无限时长的效果"
+}
