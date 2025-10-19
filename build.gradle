@@ -26,6 +26,8 @@ base.archivesName = "${mod_id}-${loader_id}-${minecraft_version}"
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(java_version)
 
+jarJar.enable()
+
 minecraft {
     mappings channel: mapping_channel, version: mapping_version
 
@@ -154,6 +156,11 @@ tasks.named('jar', Jar).configure {
 
     // This is the preferred method to reobfuscate your jar file
     finalizedBy 'reobfJar'
+    archiveClassifier = "part"
+}
+
+tasks.named('jarJar') {
+    archiveClassifier = ''
 }
 
 tasks.register('sourcesJar', Jar) {
