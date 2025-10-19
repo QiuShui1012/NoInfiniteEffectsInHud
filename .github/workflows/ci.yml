@@ -78,4 +78,4 @@ jobs:
 
           github-commitish: "release/${{ steps.properties.outputs.minecraft_version }}-${{ steps.properties.outputs.loader_id }}"
           github-tag: "mc${{ steps.properties.outputs.minecraft_version }}-${{ steps.properties.outputs.loader_id }}"
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.GIT_TOKEN }}
