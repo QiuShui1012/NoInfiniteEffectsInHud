@@ -6,9 +6,6 @@ on:
       - releases/**
     paths:
       - src/**
-      - common/**
-      - fabric/**
-      - forge/**
       - build.gradle
       - gradle.properties
       - settings.gradle
