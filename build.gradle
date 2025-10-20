@@ -71,7 +71,7 @@ minecraft {
 
         server {
             property 'forge.enabledGameTestNamespaces', mod_id
-            args '--nogui'
+            //args '--nogui' Enable GUI for run commands like /op Dev
         }
 
         // This run config launches GameTestServer and runs all registered gametests, then exits.
