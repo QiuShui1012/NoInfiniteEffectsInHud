@@ -9,6 +9,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import zh.qiushui.mod.nieih.Config;
+import zh.qiushui.mod.nieih.util.EffectUtil;
 
 @Mixin(Gui.class)
 public class GuiMixin {
@@ -23,7 +24,7 @@ public class GuiMixin {
         @SuppressWarnings("LocalMayBeArgsOnly") @Local MobEffectInstance instance
     ) {
         return Config.ENABLED.get()
-               ? (instance.isInfiniteDuration() ? Config.DISPLAY_INFINITE.get() : Config.DISPLAY_NON_INFINITE.get()) && original
+               ? (EffectUtil.isEffectInfinite(instance) ? Config.DISPLAY_INFINITE.get() : Config.DISPLAY_NON_INFINITE.get()) && original
                : original;
     }
 }

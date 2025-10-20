@@ -24,13 +24,14 @@ group = mod_group_id
 
 base.archivesName = "${mod_id}-${loader_id}-${minecraft_version}"
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(java_version)
+java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 jarJar.enable()
 
 minecraft {
     mappings channel: mapping_channel, version: mapping_version
 
+    accessTransformer = file("src/main/resources/META-INF/accesstransformer.cfg")
     copyIdeResources = true
 
     runs {
@@ -95,6 +96,10 @@ sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 repositories {
     mavenCentral()
+    maven {
+        name 'CurseMaven'
+        url 'https://cursemaven.com/'
+    }
 }
 
 dependencies {
@@ -112,6 +117,8 @@ dependencies {
     implementation(jarJar("io.github.llamalad7:mixinextras-forge:0.5.0")) {
         jarJar.ranged(it, "[0.5.0,)")
     }
+
+    implementation fg.deobf("curse.maven:composite-material-982540:6310307")
 }
 
 mixin {

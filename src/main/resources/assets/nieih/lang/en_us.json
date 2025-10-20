@@ -8,5 +8,8 @@
   "config.nieih.displayInfinite.name": "Display Infinite Duration Effects",
   "config.nieih.displayInfinite.desc": "Display infinite duration status effects (Who would actually enable this option)",
   "config.nieih.displayNonInfinite.name": "Display Non Infinite Duration Effects",
-  "config.nieih.displayNonInfinite.desc": "Display non infinite duration status effects"
+  "config.nieih.displayNonInfinite.desc": "Display non infinite duration status effects",
+  "config.nieih.cmCompat.name": "Primitive Totem as Infinite",
+  "config.nieih.cmCompat.desc.0": "Regard the effects provided by the Primitive Totem as infinite duration",
+  "config.nieih.cmCompat.desc.1": "Only effective when installed with Composite Material mod"
 }
