@@ -59,7 +59,7 @@ jobs:
           path: build/libs/
 
       - name: gametest
-        uses: Anvil-Dev/dedicated-server-launch-test@1.21.1-neoforge
+        uses: Anvil-Dev/dedicated-server-launch-test@1.20.1-forge
         with:
           mod: build/libs/${{ steps.properties.outputs.mod_id }}-${{ steps.properties.outputs.loader_id }}-${{ steps.version.outputs.version }}.jar
 
