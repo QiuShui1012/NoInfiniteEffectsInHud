@@ -1,4 +1,4 @@
-package zh.qiushui.mod.nieih.integration.composite_material;
+package zh.qiushui.mod.nieih.integration.compositematerial;
 
 import zh.qiushui.mod.nieih.Config;
 import zh.qiushui.mod.nieih.shadow.dev.anvilcraft.lib.integration.Integration;

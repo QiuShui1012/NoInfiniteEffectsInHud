@@ -1,5 +1,6 @@
 package zh.qiushui.mod.nieih;
 
+import net.minecraftforge.fml.ModLoadingContext;
 import zh.qiushui.mod.nieih.shadow.dev.anvilcraft.lib.integration.IntegrationHook;
 import zh.qiushui.mod.nieih.shadow.dev.anvilcraft.lib.integration.IntegrationManager;
 import net.minecraftforge.api.distmarker.Dist;
@@ -18,15 +19,16 @@ public class Nieih {
 
     @SuppressWarnings("removal")
     public Nieih() {
-        var ctx = FMLJavaModLoadingContext.get();
+        var ctx = ModLoadingContext.get();
         ctx.registerConfig(ModConfig.Type.CLIENT, Config.SPEC);
         ctx.registerDisplayTest(() -> NetworkConstants.IGNORESERVERONLY, (a, b) -> true);
 
         if (FMLLoader.getDist() != Dist.CLIENT) return;
         DistExecutor.safeRunWhenOn(Dist.CLIENT, () -> NieihClient::init);
 
-        IntegrationHook.setModEventBus(ctx.getModEventBus());
-        IntegrationHook.setModContainer(ctx.getContainer());
+        var context = FMLJavaModLoadingContext.get();
+        IntegrationHook.setModEventBus(context.getModEventBus());
+        IntegrationHook.setModContainer(context.getContainer());
         Nieih.INTEGRATION_MANAGER.compileContent();
         Nieih.INTEGRATION_MANAGER.loadAllIntegrations();
     }
