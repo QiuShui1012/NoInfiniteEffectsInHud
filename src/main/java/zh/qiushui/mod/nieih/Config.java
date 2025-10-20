@@ -21,5 +21,9 @@ public class Config {
         .translation("config.nieih.displayNonInfinite.desc")
         .define("displayNonInfinite", true);
 
+    public static final ForgeConfigSpec.BooleanValue CM_COMPAT = BUILDER
+        .translation("config.nieih.cmCompat.desc")
+        .define("cmCompat", true);
+
     static final ForgeConfigSpec SPEC = BUILDER.build();
 }

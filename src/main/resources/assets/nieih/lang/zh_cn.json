@@ -8,5 +8,8 @@
   "config.nieih.displayInfinite.name": "显示无限时长",
   "config.nieih.displayInfinite.desc": "显示无限时长的效果（到底是谁在开启这个选项）",
   "config.nieih.displayNonInfinite.name": "显示非无限时长",
-  "config.nieih.displayNonInfinite.desc": "显示非无限时长的效果"
+  "config.nieih.displayNonInfinite.desc": "显示非无限时长的效果",
+  "config.nieih.cmCompat.name": "荒古庇护图腾视作无限",
+  "config.nieih.cmCompat.desc.0": "将荒古庇护图腾提供的效果视作无限时长",
+  "config.nieih.cmCompat.desc.1": "仅在与 复合材料 模组同时安装时生效"
 }

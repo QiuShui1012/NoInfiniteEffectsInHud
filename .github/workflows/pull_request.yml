@@ -3,12 +3,9 @@ on:
   workflow_dispatch:
   pull_request:
     branches:
-      - releases/**
+      - dev/**
     paths:
       - src/**
-      - common/**
-      - fabric/**
-      - forge/**
       - build.gradle
       - gradle.properties
       - settings.gradle

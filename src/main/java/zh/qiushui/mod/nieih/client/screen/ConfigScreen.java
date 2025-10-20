@@ -18,8 +18,8 @@ import net.minecraft.util.FormattedCharSequence;
 import net.minecraftforge.common.ForgeConfigSpec;
 import org.jetbrains.annotations.Nullable;
 import zh.qiushui.mod.nieih.Config;
+import zh.qiushui.mod.nieih.util.ComponentUtil;
 
-import java.util.Collections;
 import java.util.List;
 
 public class ConfigScreen extends Screen {
@@ -55,7 +55,8 @@ public class ConfigScreen extends Screen {
         this.list = new ConfigList(
             new Entry(Config.ENABLED),
             new Entry(Config.DISPLAY_INFINITE),
-            new Entry(Config.DISPLAY_NON_INFINITE)
+            new Entry(Config.DISPLAY_NON_INFINITE),
+            new Entry(Config.CM_COMPAT)
         );
         this.addWidget(this.list);
         this.addRenderableWidget(Button.builder(
@@ -144,7 +145,7 @@ public class ConfigScreen extends Screen {
         protected Entry(ForgeConfigSpec.BooleanValue config) {
             String name = config.getPath().get(0);
             this.name = Component.translatable("config.nieih." + name + ".name");
-            this.tooltip = Collections.singletonList(Component.translatable("config.nieih." + name + ".desc").getVisualOrderText());
+            this.tooltip = ComponentUtil.getMultiple("config.nieih." + name + ".desc");
             this.config = config;
             this.value = config.get();
 
