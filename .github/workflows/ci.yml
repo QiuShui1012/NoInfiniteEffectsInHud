@@ -76,8 +76,11 @@ jobs:
             build/libs/${{ steps.properties.outputs.mod_id }}-${{ steps.properties.outputs.loader_id }}-${{ steps.version.outputs.version }}-sources.jar
 
           modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
+
+          curseforge-dependencies: |
+            982540(optional)
           curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
 
           github-commitish: "release/${{ steps.properties.outputs.minecraft_version }}-${{ steps.properties.outputs.loader_id }}"
-          github-tag: "mc${{ steps.properties.outputs.minecraft_version }}-${{ steps.properties.outputs.loader_id }}"
+          github-tag: "mc${{ steps.properties.outputs.minecraft_version }}-${{ steps.properties.outputs.loader_id }}-${{ steps.properties.outputs.mod_version }}"
           github-token: ${{ secrets.GIT_TOKEN }}
