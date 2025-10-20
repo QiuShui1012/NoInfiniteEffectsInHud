@@ -70,6 +70,10 @@ jobs:
           version: "mc${{ steps.properties.outputs.minecraft_version }}-${{ steps.properties.outputs.loader_id }}"
           version-type: release
           java: ${{ steps.properties.outputs.java_version }}
+          files: |
+            build/libs/${{ steps.properties.outputs.mod_id }}-${{ steps.properties.outputs.loader_id }}-${{ steps.version.outputs.version }}.jar
+            build/libs/${{ steps.properties.outputs.mod_id }}-${{ steps.properties.outputs.loader_id }}-${{ steps.version.outputs.version }}-part.jar
+            build/libs/${{ steps.properties.outputs.mod_id }}-${{ steps.properties.outputs.loader_id }}-${{ steps.version.outputs.version }}-sources.jar
 
           modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
           curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
