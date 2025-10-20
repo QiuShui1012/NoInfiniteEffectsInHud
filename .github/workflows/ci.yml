@@ -71,10 +71,7 @@ jobs:
           version-type: release
           java: ${{ steps.properties.outputs.java_version }}
 
-          modrinth-id: AANobbMI
           modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
-
-          curseforge-id: 394468
           curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
 
           github-commitish: "release/${{ steps.properties.outputs.minecraft_version }}-${{ steps.properties.outputs.loader_id }}"
