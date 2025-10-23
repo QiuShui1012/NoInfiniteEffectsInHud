@@ -27,7 +27,7 @@ jobs:
         uses: christian-draeger/read-properties@1.1.1
         with:
           path: gradle.properties
-          properties: 'mod_id mod_name mod_version loader_id loader_name java_version minecraft_version'
+          properties: 'mod_id mod_name mod_version loader_id loader_name java_version'
 
       - name: Setup Java ${{ steps.properties.outputs.java_version }}
         uses: actions/setup-java@v3.6.0
@@ -48,14 +48,14 @@ jobs:
       - name: Get Version
         id: version
         run: |
-          MESSAGE=$(ls build/libs/* | grep sources.jar -v | grep part.jar -v | grep slim.jar -v | awk -F '${{ steps.properties.outputs.mod_id }}-${{ steps.properties.outputs.loader_id }}-|.jar' '{print $2}')
-          echo "version=$MESSAGE" >> $GITHUB_OUTPUT
+          MESSAGE=$(ls build/libs/* | grep sources.jar -v | awk -F '${{ steps.properties.outputs.mod_id }}-${{ steps.properties.outputs.loader_id }}-|.jar' '{print $2}')
+          echo "version=$MESSAGE" >> "$GITHUB_OUTPUT"
 
       - name: capture build artifacts
         uses: actions/upload-artifact@v4.3.3
         with:
           name: "${{ steps.properties.outputs.mod_name }} ${{ steps.properties.outputs.loader_name }} ${{ steps.version.outputs.version }}"
-          path: build/libs/${{ steps.properties.outputs.mod_id }}-${{ steps.properties.outputs.loader_id}}-${{ steps.version.outputs.version }}.jar
+          path: build/libs/
 
       - name: gametest
         uses: Anvil-Dev/dedicated-server-launch-test@1.21.1-neoforge

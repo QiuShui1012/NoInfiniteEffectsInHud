@@ -28,7 +28,7 @@ jobs:
         uses: christian-draeger/read-properties@1.1.1
         with:
           path: gradle.properties
-          properties: 'mod_id mod_name mod_version loader_id loader_name java_version minecraft_version'
+          properties: 'mod_id mod_name mod_version loader_id loader_name java_version'
 
       - name: Setup Java ${{ steps.properties.outputs.java_version }}
         uses: actions/setup-java@v3.6.0
@@ -49,7 +49,7 @@ jobs:
       - name: Get Version
         id: version
         run: |
-          MESSAGE=$(ls build/libs/* | grep sources.jar -v | grep part.jar -v | grep slim.jar -v | awk -F '${{ steps.properties.outputs.mod_id }}-${{ steps.properties.outputs.loader_id }}-|.jar' '{print $2}')
+          MESSAGE=$(ls build/libs/* | grep sources.jar -v | awk -F '${{ steps.properties.outputs.mod_id }}-${{ steps.properties.outputs.loader_id }}-|.jar' '{print $2}')
           echo "version=$MESSAGE" >> "$GITHUB_OUTPUT"
 
       - name: capture build artifacts
@@ -59,15 +59,15 @@ jobs:
           path: build/libs/
 
       - name: gametest
-        uses: Anvil-Dev/dedicated-server-launch-test@1.20.1-forge
+        uses: Anvil-Dev/dedicated-server-launch-test@1.21.1-neoforge
         with:
           mod: build/libs/${{ steps.properties.outputs.mod_id }}-${{ steps.properties.outputs.loader_id }}-${{ steps.version.outputs.version }}.jar
 
       - name: Publish to Mod Platforms
         uses: Kir-Antipov/mc-publish@v3.3
         with:
-          name: "${{ steps.properties.outputs.mod_name }} ${{ steps.properties.outputs.mod_version }} for Minecraft ${{ steps.properties.outputs.minecraft_version }}"
-          version: "mc${{ steps.properties.outputs.minecraft_version }}-${{ steps.properties.outputs.loader_id }}"
+          name: "${{ steps.properties.outputs.mod_name }} ${{ steps.properties.outputs.mod_version }} for Minecraft all neo-supported versions"
+          version: "all-${{ steps.properties.outputs.loader_id }}-${{ steps.properties.outputs.mod_version }}"
           version-type: release
           java: ${{ steps.properties.outputs.java_version }}
           files: |
@@ -81,6 +81,6 @@ jobs:
             982540(optional)
           curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
 
-          github-commitish: "release/${{ steps.properties.outputs.minecraft_version }}-${{ steps.properties.outputs.loader_id }}"
-          github-tag: "mc${{ steps.properties.outputs.minecraft_version }}-${{ steps.properties.outputs.loader_id }}-${{ steps.properties.outputs.mod_version }}"
+          github-commitish: "release/all-${{ steps.properties.outputs.loader_id }}-${{ steps.properties.outputs.mod_version }}"
+          github-tag: "all-${{ steps.properties.outputs.loader_id }}-${{ steps.properties.outputs.mod_version }}"
           github-token: ${{ secrets.GIT_TOKEN }}
