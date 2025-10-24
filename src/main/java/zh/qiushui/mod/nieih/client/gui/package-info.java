@@ -1,6 +1,6 @@
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-package zh.qiushui.mod.nieih.client.screen;
+package zh.qiushui.mod.nieih.client.gui;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 
