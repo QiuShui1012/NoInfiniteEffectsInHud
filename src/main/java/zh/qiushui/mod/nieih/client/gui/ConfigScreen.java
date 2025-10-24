@@ -137,7 +137,7 @@ public class ConfigScreen extends Screen {
         }
     }
 
-   static class ConfigList extends ContainerObjectSelectionList<ConfigScreen.Entry> {
+    static class ConfigList extends ContainerObjectSelectionList<ConfigScreen.Entry> {
         public ConfigList(ConfigScreen.Entry... entries) {
             super(
                 ConfigScreen.getScreen().getMinecraft(),
@@ -147,7 +147,7 @@ public class ConfigScreen extends Screen {
                 ConfigScreen.getScreen().height - 36,
                 24
             );
-            for(ConfigScreen.Entry entry : entries) {
+            for (ConfigScreen.Entry entry : entries) {
                 this.addEntry(entry);
             }
 
