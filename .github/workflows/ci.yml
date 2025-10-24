@@ -80,6 +80,6 @@ jobs:
             982540(optional)
           curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
 
-          github-commitish: "release/all-${{ steps.properties.outputs.loader_id }}-${{ steps.properties.outputs.mod_version }}"
+          github-commitish: "release/all-${{ steps.properties.outputs.loader_id }}"
           github-tag: "all-${{ steps.properties.outputs.loader_id }}-${{ steps.properties.outputs.mod_version }}"
           github-token: ${{ secrets.GIT_TOKEN }}
