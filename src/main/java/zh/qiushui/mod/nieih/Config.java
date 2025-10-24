@@ -1,29 +1,30 @@
 package zh.qiushui.mod.nieih;
 
 import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.config.ModConfigEvent;
 
-@Mod.EventBusSubscriber(modid = Nieih.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class Config {
     private static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
 
     public static final ForgeConfigSpec.BooleanValue ENABLED = BUILDER
-        .translation("config.nieih.enabled.desc")
         .define("enabled", true);
 
-    public static final ForgeConfigSpec.BooleanValue DISPLAY_INFINITE = BUILDER
-        .translation("config.nieih.displayInfinite.desc")
-        .define("displayInfinite", false);
+    public static final ForgeConfigSpec.BooleanValue INFINITE = BUILDER
+        .define("duration.infinite", false);
 
-    public static final ForgeConfigSpec.BooleanValue DISPLAY_NON_INFINITE = BUILDER
-        .translation("config.nieih.displayNonInfinite.desc")
-        .define("displayNonInfinite", true);
+    public static final ForgeConfigSpec.BooleanValue NON_INFINITE = BUILDER
+        .define("duration.nonInfinite", true);
+
+    public static final ForgeConfigSpec.BooleanValue BENEFICIAL = BUILDER
+        .define("category.beneficial", true);
+
+    public static final ForgeConfigSpec.BooleanValue NEUTRAL = BUILDER
+        .define("category.neutral", true);
+
+    public static final ForgeConfigSpec.BooleanValue HARMFUL = BUILDER
+        .define("category.harmful", true);
 
     public static final ForgeConfigSpec.BooleanValue CM_COMPAT = BUILDER
-        .translation("config.nieih.cmCompat.desc")
-        .define("cmCompat", true);
+        .define("compat.cmCompat", true);
 
     static final ForgeConfigSpec SPEC = BUILDER.build();
 }
