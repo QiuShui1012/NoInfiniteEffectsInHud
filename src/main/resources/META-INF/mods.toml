@@ -2,6 +2,7 @@ modLoader = "javafml"
 loaderVersion = "[1,)"
 license = "${mod_license}"
 issueTrackerURL="${mod_sources}/issues"
+clientSideOnly=true
 
 [[mods]]
 modId = "${mod_id}"
@@ -11,13 +12,7 @@ displayURL = "${mod_homepage}"
 logoFile="icon.png"
 authors = "${mod_authors}"
 description = '''${mod_description}'''
-
-[[dependencies."${mod_id}"]]
-modId = "forge"
-mandatory = true
-versionRange = "${minecraft_dependency}"
-ordering = "NONE"
-side = "BOTH"
+displayTest = "IGNORE_ALL_VERSION"
 
 [[dependencies."${mod_id}"]]
 modId = "minecraft"
@@ -25,10 +20,6 @@ mandatory = true
 versionRange = "${minecraft_dependency}"
 ordering = "NONE"
 side = "BOTH"
-
-[mc-publish]
-modrinth = "IV2Z12zP"
-curseforge = 1368557
 
 [[mixins]]
 config="${mod_id}.mixins.json"

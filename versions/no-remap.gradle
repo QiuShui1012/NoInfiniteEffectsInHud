@@ -12,6 +12,7 @@ apply plugin: "com.replaymod.preprocess"
 preprocess {
     vars.put("MC", mcVersion)
     vars.put("JAVA", java.sourceCompatibility.ordinal() + 1)
+    vars.put("FORGE", 0)
     vars.put("NEOFORGE", modPlatform == "neoforge" ? 1 : 0)
 
     patternAnnotation = "com.qiushui1012.mod.nieih.util.Pattern"

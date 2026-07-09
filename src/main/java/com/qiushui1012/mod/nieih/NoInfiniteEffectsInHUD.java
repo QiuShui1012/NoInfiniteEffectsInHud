@@ -1,26 +1,27 @@
 package com.qiushui1012.mod.nieih;
 
-import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
-import net.minecraftforge.fml.javafmlmod.FMLModContainer;
+
+//#if MC < 1_21_01
+import net.minecraftforge.fml.ModLoadingContext;
+//#else
+//$$ import net.neoforged.fml.ModContainer;
+//#endif
 
 @Mod(NoInfiniteEffectsInHUD.MOD_ID)
 public class NoInfiniteEffectsInHUD {
     public static final String MOD_ID = "nieih";
 
-    @SuppressWarnings({"RedundantSuppression", "unused"})
+    @SuppressWarnings("RedundantSuppression")
     public NoInfiniteEffectsInHUD(
-        //#if MC >= 1_19_02
-        //$$ ModLoadingContext ctx,
+        //#if MC >= 1_21_01
+        //$$ ModContainer container
         //#endif
-        FMLModContainer container
     ) {
-        //#if MC < 1_19_02
+        //#if FORGE || MC < 1_21_01
         // noinspection removal
         ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, Config.SPEC);
-        //#elseif MC < 1_20_06
-        //$$ ctx.registerConfig(ModConfig.Type.CLIENT, Config.SPEC);
         //#else
         //$$ container.registerConfig(ModConfig.Type.CLIENT, Config.SPEC);
         //#endif

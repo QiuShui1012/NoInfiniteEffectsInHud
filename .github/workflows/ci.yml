@@ -8,7 +8,7 @@ on:
     paths:
       - .github/workflows/ci.yml
       - .github/workflows/setup.yml
-      - .github/workflows/upload_artifacts.yml
+      - .github/workflows/build_and_upload.yml
       - .github/workflows/test_and_publish.yml
       - gradle/**
       - src/**
@@ -27,49 +27,29 @@ jobs:
     uses: ./.github/workflows/setup.yml
 
   build:
-    name: Build All Artifacts
-    runs-on: ubuntu-latest
+    name: Build and Upload
+    needs: setup
     permissions:
       contents: write
-    needs: setup
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v7
+    uses: ./.github/workflows/build_and_upload.yml
+    with:
+      mod_id: "${{ needs.setup.outputs.mod_id }}"
+      mod_name: "${{ needs.setup.outputs.mod_name }}"
+      versions: "${{ needs.setup.outputs.versions }}"
+      ci_build: true
 
-      - name: Setup Javas
-        uses: actions/setup-java@v5.5.0
-        with:
-          distribution: zulu
-          java-version: |
-            8
-            16
-            17
-            21
-            25
-          cache: 'gradle'
-
-      - name: Make Gradle Wrapper Executable
-        if: ${{ runner.os != 'Windows' }}
-        run: chmod +x ./gradlew
-
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v6
-
-      - name: Build with Gradle
-        run: ./gradlew build
-
-      - name: Capture Build Artifacts
-        uses: ./.github/workflows/upload_artifacts.yml
-        with:
-          mod_id: "${{ needs.setup.outputs.mod_id }}"
-          mod_name: "${{ needs.setup.outputs.mod_name }}"
-          versions: needs.setup.outputs.versions
-
-      - name: Test and Publish
-        uses: ./.github/workflows/test_and_publish.yml
-        with:
-          mod_id: "${{ needs.setup.outputs.mod_id }}"
-          mod_name: "${{ needs.setup.outputs.mod_name }}"
-          versions: "${{ needs.setup.outputs.versions }}"
-          version_type: alpha
-          ci_build: true
+  test:
+    name: Test and Publish
+    needs: build
+    permissions:
+      contents: write
+    uses: ./.github/workflows/test_and_publish.yml
+    with:
+      mod_id: "${{ needs.build.outputs.mod_id }}"
+      mod_name: "${{ needs.build.outputs.mod_name }}"
+      versions: "${{ needs.build.outputs.versions }}"
+      version_type: alpha
+      ci_build: true
+    secrets:
+      curseforge_token: ${{ secrets.CURSEFORGE_TOKEN }}
+      modrinth_token: ${{ secrets.MODRINTH_TOKEN }}

@@ -28,7 +28,7 @@ preprocess {
     var mc12101_neoforge = createNode("1.21.1-neoforge", 1_21_01, 'mojang')
     var mc12104_neoforge = createNode("1.21.4-neoforge", 1_21_04, 'mojang')
     var mc12108_neoforge = createNode("1.21.8-neoforge", 1_21_08, 'mojang')
-    var mc260102_neoforge = createNode("26.1-neoforge", 26_01_02, 'mojang')
+    var mc260102_neoforge = createNode("26.1.2-neoforge", 26_01_02, 'mojang')
     var mc260200_neoforge = createNode("26.2-neoforge", 26_02_00, 'mojang')
 
     mc12002_forge.link(mc12002_neoforge, file("versions/forge-map2-neoforge"))
