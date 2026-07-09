@@ -1,0 +1,61 @@
+name: Upload Release Assets
+on:
+  release:
+    types:
+      - published
+    branches:
+      - release/**
+      - dev/**
+
+jobs:
+  setup:
+    name: Setup Environment
+    uses: ./.github/workflows/setup.yml
+
+  build:
+    name: Build All Artifacts
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    needs: setup
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup Javas
+        uses: actions/setup-java@v5.5.0
+        with:
+          distribution: zulu
+          java-version: |
+            8
+            16
+            17
+            21
+            25
+          cache: 'gradle'
+
+      - name: Make Gradle Wrapper Executable
+        if: ${{ runner.os != 'Windows' }}
+        run: chmod +x ./gradlew
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v6
+
+      - name: Build with Gradle
+        run: ./gradlew build
+
+      - name: Capture Build Artifacts
+        uses: ./.github/workflows/upload_artifacts.yml
+        with:
+          mod_id: "${{ needs.setup.outputs.mod_id }}"
+          mod_name: "${{ needs.setup.outputs.mod_name }}"
+          versions: needs.setup.outputs.versions
+
+      - name: Test and Publish
+        uses: ./.github/workflows/test_and_publish.yml
+        with:
+          mod_id: "${{ needs.setup.outputs.mod_id }}"
+          mod_name: "${{ needs.setup.outputs.mod_name }}"
+          versions: "${{ needs.setup.outputs.versions }}"
+          version_type: release
+          gametest: false

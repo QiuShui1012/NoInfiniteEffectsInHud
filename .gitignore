@@ -117,4 +117,4 @@ runs/
 
 # Avoid ignoring Gradle wrapper jar file (.jar files are usually ignored)
 !gradle-wrapper.jar
-!src/main/java/zh/qiushui/mod/nieih/client/gui/ConfigList1202.class
+!src/main/java/com/qiushui1012/mod/nieih/client/gui/ConfigList1202.class

@@ -20,5 +20,10 @@
   "config.nieih.category.harmful": "显示负面效果",
   "config.nieih.category.harmful.desc": "显示负面的状态效果",
   "config.nieih.category.neutral": "显示中性效果",
-  "config.nieih.category.neutral.desc": "显示中性的状态效果"
+  "config.nieih.category.neutral.desc": "显示中性的状态效果",
+  "config.nieih.compat": "模组兼容",
+  "config.nieih.compat.desc": "控制模组兼容的开关或其他配置",
+  "config.nieih.compat.cmCompat": "荒古庇护图腾视作无限",
+  "config.nieih.compat.cmCompat.desc.0": "将荒古庇护图腾提供的效果视作无限时长",
+  "config.nieih.compat.cmCompat.desc.1": "仅在与 复合材料 模组同时安装时生效"
 }

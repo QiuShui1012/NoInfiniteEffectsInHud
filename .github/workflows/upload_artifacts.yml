@@ -1,0 +1,40 @@
+name: Upload Artifacts
+on:
+  workflow_call:
+    inputs:
+      mod_id:
+        type: string
+        required: true
+      mod_name:
+        type: string
+        required: true
+      versions:
+        type: string
+        required: true
+    outputs:
+      versions:
+        value: ${{ jobs.setup.outputs.versions }}
+
+jobs:
+  upload:
+    name: Upload ${{ matrix.version }} Artifacts
+    runs-on: ubuntu-latest
+    permissions: write-all
+    strategy:
+      fail-fast: false
+      matrix:
+        version: ${{ fromJson(inputs.versions).versions }}
+    steps:
+      - name: Upload ${{ matrix.version }} Jar
+        uses: actions/upload-artifact@v7
+        with:
+          name: "${{ inputs.mod_name }} ${{ matrix.version }} Jar"
+          path: |
+            versions/${{ matrix.version }}/build/libs/*.jar
+            !versions/${{ matrix.version }}/build/libs/*-sources.jar
+
+      - name: Upload ${{ matrix.version }} Sources Jar
+        uses: actions/upload-artifact@v7
+        with:
+          name: "${{ inputs.mod_name }} ${{ matrix.version }} Jar"
+          path: versions/${{ matrix.version }}/build/libs/*-sources.jar

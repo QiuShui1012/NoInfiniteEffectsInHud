@@ -20,5 +20,10 @@
   "config.nieih.category.harmful": "Display Harmful Effects",
   "config.nieih.category.harmful.desc": "Display harmful status effects",
   "config.nieih.category.neutral": "Display Neutral Effects",
-  "config.nieih.category.neutral.desc": "Display neutral status effects"
+  "config.nieih.category.neutral.desc": "Display neutral status effects",
+  "config.nieih.compat": "Mod Compats",
+  "config.nieih.compat.desc": "Control the on/off or other config about the compats of mods",
+  "config.nieih.compat.cmCompat": "Primitive Totem as Infinite",
+  "config.nieih.compat.cmCompat.desc.0": "Regard the effects provided by the Primitive Totem as infinite duration",
+  "config.nieih.compat.cmCompat.desc.1": "Only effective when installed with Composite Material mod"
 }

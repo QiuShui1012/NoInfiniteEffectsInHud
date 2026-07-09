@@ -1,0 +1,10 @@
+[versions]
+
+architectury-loom = "1.17-SNAPSHOT"
+preprocessor = "1bb95e0810"
+
+[plugins]
+
+architectury-remap = { id = "dev.architectury.loom", version.ref = "architectury-loom" }
+architectury-noremap = { id = "dev.architectury.loom-no-remap", version.ref = "architectury-loom" }
+preprocessor = { id = "com.replaymod.preprocess", version.ref = "preprocessor" }

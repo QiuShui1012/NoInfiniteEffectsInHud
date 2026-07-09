@@ -1,0 +1,106 @@
+name: test_and_publish.yml
+on:
+  workflow_call:
+    inputs:
+      mod_id:
+        type: string
+        required: true
+      mod_name:
+        type: string
+        required: true
+      versions:
+        description: 'Versions'
+        type: string
+        required: true
+      version_type:
+        description: 'Version Type'
+        type: string
+        required: true
+      ci_build:
+        description: 'CI Build'
+        type: boolean
+        default: true
+      pr_build:
+        description: 'PR Build'
+        type: boolean
+        default: true
+      gametest:
+        description: 'Should GameTest'
+        type: boolean
+        default: false
+
+jobs:
+  tap:
+    name: Test and Publish Version ${{ matrix.version }}
+    runs-on: ubuntu-latest
+    permissions: write-all
+    strategy:
+      fail-fast: false
+      matrix:
+        version: ${{ fromJson(inputs.versions).versions }}
+    env:
+      NOT_DEV: true
+      CI_BUILD: ${{ inputs.ci_build }}
+      PR_BUILD: ${{ inputs.pr_build }}
+      VERSION_TYPE: ${{ inputs.version_type }}
+    steps:
+      - name: Get Version
+        id: version
+        run: |
+          MESSAGE=$(ls ./versions/${{ inputs.version }}/build/libs/* | grep sources.jar -v | awk -F '${{ inputs.mod_id }}-${{ inputs.version }}-|.jar' '{print $2}')
+          echo "version=$MESSAGE" >> $GITHUB_OUTPUT
+
+      - name: Read Properties
+        id: properties
+        uses: christian-draeger/read-properties@1.1.1
+        with:
+          path: versions/${{ inputs.version }}/gradle.properties
+          properties: 'dependencies.minecraft_dependency action.minecraft_version action.mod_loader action.loader_version action.java_version action.extra_mods'
+
+      - name: Download Artifact
+        uses: actions/download-artifact@v8
+        with:
+          name: "${{ inputs.mod_name }} ${{ matrix.version }} Jar"
+          path: |
+            versions/${{ matrix.version }}/build/libs/*.jar
+            !versions/${{ matrix.version }}/build/libs/*-sources.jar
+
+      - name: Game Test
+        if: ${{ inputs.gametest }}
+        uses: Anvil-Dev/dedicated-server-launch-test@universal
+        with:
+          minecraft_version: '${{ steps.properties.outputs.action-minecraft_version }}'
+          mod_loader: '${{ steps.properties.outputs.action-mod_loader }}'
+          loader_version: '${{ steps.properties.outputs.action-loader_version }}'
+          mods: versions/${{ inputs.version }}/build/libs/${{ inputs.mod_id }}-${{ inputs.version }}-${{ steps.version.outputs.version }}.jar
+          extra-mods: '${{ steps.properties.outputs.action-extra_mods }}'
+          quiet-setup: True
+
+      - name: Upload Release Jar
+        if: ${{ !inputs.ci_build && !inputs.pr_build }}
+        uses: softprops/action-gh-release@v0.1.15
+        with:
+          files: |
+            versions/${{ inputs.version }}/build/libs/${{ inputs.mod_id }}-${{ inputs.version }}-${{ steps.version.outputs.version }}.jar
+
+      - name: Publish Mod
+        uses: Kira-NT/mc-publish@v3.3
+        continue-on-error: true
+        with:
+          name: "${{ inputs.mod_name }} ${{ inputs.version }} v${{ steps.version.outputs.version }}"
+          version: ${{ steps.version.outputs.version }}
+          loaders: ${{ steps.properties.outputs.action-mod_loader }}
+          game-versions: ${{ steps.properties.outputs.dependencies-minecraft_dependency }}
+          version-type: ${{ env.VERSION_TYPE }}
+          fail-mode: skip
+
+          modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
+          modrinth-featured: true
+
+          curseforge-dependencies: |
+            982540(optional)
+          curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
+
+          files: |
+            versions/${{ inputs.version }}/build/libs/${{ inputs.mod_id }}-${{ inputs.version }}-${{ steps.version.outputs.version }}.jar
+            versions/${{ inputs.version }}/build/libs/${{ inputs.mod_id }}-${{ inputs.version }}-${{ steps.version.outputs.version }}-sources.jar

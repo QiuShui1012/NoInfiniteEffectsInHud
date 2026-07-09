@@ -1,0 +1,242 @@
+plugins {
+    id 'java'
+    id 'io.freefair.lombok' version '8.7.1'
+}
+
+final int mcVersion = project.mcVersion
+final String modPlatform = project.modPlatform
+
+apply plugin: "dev.architectury.loom"
+apply plugin: "com.replaymod.preprocess"
+
+preprocess {
+    vars.put("MC", mcVersion)
+    vars.put("JAVA", java.sourceCompatibility.ordinal() + 1)
+    vars.put("FORGE", modPlatform == "forge" ? 1 : 0)
+    vars.put("NEOFORGE", modPlatform == "neoforge" ? 1 : 0)
+
+    patternAnnotation = "com.qiushui1012.mod.nieih.util.Pattern"
+}
+
+loom.silentMojangMappingsLicense()
+
+repositories {
+    mavenLocal()
+
+    maven {
+        name = "NeoForge"
+        url = "https://maven.neoforged.net/releases"
+    }
+
+    maven {
+        name = "Forge"
+        url = "https://files.minecraftforge.net/maven"
+    }
+
+    maven {
+        name 'CurseMaven'
+        url 'https://cursemaven.com/'
+    }
+
+    mavenCentral()
+}
+
+dependencies {
+    // Development environment
+    minecraft "com.mojang:minecraft:${project.property("dependencies.minecraft_version")}"
+    mappings loom.officialMojangMappings()
+
+    if (mcVersion == 1_20_01) {
+        implementation "curse.maven:composite-material-982540:8313603"
+    }
+
+    switch (modPlatform) {
+        case "forge":
+            forge "net.minecraftforge:forge:${project.property("dependencies.minecraft_version")}-${project.property("dependencies.forge_version")}"
+            compileOnly annotationProcessor("io.github.llamalad7:mixinextras-common:0.5.4")
+            implementation include("io.github.llamalad7:mixinextras-forge:0.5.4")
+            break
+        case "neoforge":
+            neoForge "net.neoforged:neoforge:${project.property("dependencies.neoforge_version")}"
+            if (mcVersion < 1_21_01) {
+                compileOnly annotationProcessor("io.github.llamalad7:mixinextras-common:0.5.4")
+                implementation include("io.github.llamalad7:mixinextras-neoforge:0.5.4")
+            }
+            break
+    }
+}
+
+loom {
+    enableTransitiveAccessWideners = false
+
+    interfaceInjection {
+        enableDependencyInterfaceInjection = false
+        isEnabled = false
+    }
+
+    mixin {
+        add sourceSets.main, "mixins.${project.parent.property("mod.id")}.refmap.json"
+        useLegacyMixinAp = true
+    }
+
+    if (modPlatform == "forge") {
+        forge {
+            mixinConfig("${project.parent.property("mod.id")}.mixins.json")
+        }
+    }
+
+    var isJbr = System.getProperty('java.vm.vendor').contains('JetBrains')
+    runs {
+        client {
+            systemProperties.put "--username", project.getOrDefault("ow.game.window.username", "dev")
+            runDirectory = file("runs/client")
+        }
+
+        server {
+            runDirectory = file("runs/server")
+        }
+
+        configureEach {
+            // Dump modified classes automatically.
+            systemProperties.put "mixin.debug.export", "true"
+            if (isJbr) jvmArguments.add "-XX:+AllowEnhancedClassRedefinition"
+        }
+    }
+
+}
+
+base {
+    archivesName = "${project.parent.property("mod.archives_base_name")}-${project.property("dependencies.minecraft_version")}-${modPlatform}"
+    group = "${project.property("mod.maven_group")}"
+    version = project.getVersion(project.parent)
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(
+            mcVersion >= 1_20_05 ? 21 :
+            mcVersion >= 1_18_00 ? 17 :
+            mcVersion >= 1_17_00 ? 16 :
+            8
+        )
+    }
+
+    withSourcesJar()
+}
+
+processResources {
+    inputs.property("minecraft_dependency", project.property("dependencies.minecraft_dependency"))
+    inputs.property("mod_id", project.parent.property("mod.id"))
+    inputs.property("mod_name", project.parent.property("mod.name"))
+    inputs.property("mod_description", project.parent.property("mod.description"))
+    inputs.property("mod_homepage", project.parent.property("mod.homepage"))
+    inputs.property("mod_license", project.parent.property("mod.license"))
+    inputs.property("mod_authors", project.parent.property("mod.authors"))
+    inputs.property("mod_sources", project.parent.property("mod.sources"))
+    inputs.property("mod_version", project.getVersion(this.project.parent))
+    inputs.property("java_version", java.sourceCompatibility.getMajorVersion())
+
+    [
+        "pack.mcmeta"                 : ["forge"],
+        "META-INF"                    : ["forge", "neoforge"],
+        "META-INF/mods.toml"          : ["forge", mcVersion < 12005 ? "neoforge" : "none"],
+        "META-INF/neoforge.mods.toml" : [mcVersion >= 12005 ? "neoforge" : "none"],
+        "nieih.mixins.json"           : ["forge", "neoforge"]
+    ].forEach { file, platforms ->
+        if (platforms.contains(modPlatform)) {
+            filesMatching(file) {
+                expand([
+                    "minecraft_dependency" : inputs.properties.get("minecraft_dependency"),
+                    "mod_id"               : inputs.properties.get("mod_id"),
+                    "mod_name"             : inputs.properties.get("mod_name"),
+                    "mod_description"      : inputs.properties.get("mod_description"),
+                    "mod_homepage"         : inputs.properties.get("mod_homepage"),
+                    "mod_license"          : inputs.properties.get("mod_license"),
+                    "mod_authors"          : inputs.properties.get("mod_authors"),
+                    "mod_sources"          : inputs.properties.get("mod_sources"),
+                    "mod_version"          : inputs.properties.get("mod_version"),
+                    "java_version"         : inputs.properties.get("java_version")
+                ])
+            }
+        } else {
+            exclude(file)
+        }
+    }
+
+    from "${rootDir}/LICENSE"
+    exclude "com/qiushui1012/mod/nieih/util/Pattern.class"
+    exclude "com/qiushui1012/mod/nieih/util/Patterns.class"
+    if (mcVersion > 1_20_01) {
+        exclude "com/qiushui1012/mod/nieih/integration/compositematerial/CMCompat.class"
+        exclude "com/qiushui1012/mod/nieih/mixin/InventoryAccessor.class"
+    }
+    if (mcVersion > 1_20_02) {
+        exclude "com/qiushui1012/mod/nieih/mixin/GuiMixin.class"
+    }
+}
+
+tasks.named('sourcesJar').configure {
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+    from delombok.outputs.files
+    dependsOn delombok
+}
+
+tasks.named("runClient").configure {
+    dependsOn tasks.named("build")
+}
+
+artifacts {
+    archives tasks.sourcesJar
+}
+
+// Setup server default settings.
+tasks.named("runServer") {
+    defaultCharacterEncoding = "UTF-8"
+
+    doFirst {
+        // Agree eula before server init.
+        file("${project.projectDir}/run/server/eula.txt").with { File f -> {
+            if (!f.exists()) {
+                f.parentFile.mkdirs()
+                f.withWriter { BufferedWriter writer ->
+                    writer.writeLine("#By changing the setting below to TRUE you are indicating your agreement to our EULA (https://account.mojang.com/documents/minecraft_eula).")
+                    writer.writeLine("#${new Date()}")
+                    writer.writeLine("eula=true")
+                }
+            }
+        }}
+    }
+}
+
+tasks.register("cleanRuns", DefaultTask.class) {
+    doLast {
+        file(loom.runConfigs.client.runDirectory).parentFile.deleteDir()
+    }
+}
+
+tasks.register("cleanRunClient", DefaultTask.class) {
+    doLast {
+        file(loom.runConfigs.client.runDirectory).deleteDir()
+    }
+}
+
+tasks.register("cleanRunServer", DefaultTask.class) {
+    doLast {
+        file(loom.runConfigs.server.runDirectory).deleteDir()
+    }
+}
+
+[
+    "cleanRuns", "cleanRunClient", "cleanRunServer",
+    "runClient", "runServer",
+    "preprocessCode", "preprocessResources",
+    "preprocessTestCode", "preprocessTestResources"
+].forEach { taskName ->
+    if (tasks.getNames().contains(taskName)) {
+        tasks.named(taskName) {
+            it.group = "${project.property("mod.id")}"
+        }
+    }
+}
+
+lombok.version = "1.18.34"

@@ -1,172 +1,148 @@
 plugins {
-    id 'java-library'
-    id 'eclipse'
-    id 'idea'
-    id 'net.neoforged.moddev' version '2.0.115'
-    id 'io.freefair.lombok' version '8.7.1'
+    alias libs.plugins.architectury.noremap apply false
+    alias libs.plugins.architectury.remap apply false
+    alias libs.plugins.preprocessor
 }
 
-String buildNumber
-String buildType = 'build'
-if (System.getenv("CI_BUILD") == 'false') buildNumber = null
-else {
-    if (System.getenv("PR_BUILD") != 'false') buildType = 'pr'
-    buildNumber = System.getenv("GITHUB_RUN_NUMBER")
-}
-def envVersion = System.getenv("GITHUB_REF")
-if (envVersion != null && envVersion.startsWith("refs/tags/")) {
-    version = envVersion.substring(envVersion.lastIndexOf('/') + 1)
-} else {
-    version = "${mod_version}" + (buildNumber != null ? "+${buildType}.${buildNumber}" : "")
-}
-group = mod_group_id
+preprocess {
+    strictExtraMappings = true
 
-base.archivesName = "${mod_id}-${loader_id}-all"
+    var mc11605_forge = createNode("1.16.5-forge", 1_16_05, 'mojang')
+    var mc11701_forge = createNode("1.17.1-forge", 1_17_01, 'mojang')
+    var mc11802_forge = createNode("1.18.2-forge", 1_18_02, 'mojang')
+    var mc11902_forge = createNode("1.19.2-forge", 1_19_02, 'mojang')
+    var mc11904_forge = createNode("1.19.4-forge", 1_19_04, 'mojang')
+    var mc12001_forge = createNode("1.20.1-forge", 1_20_01, 'mojang')
+    var mc12002_forge = createNode("1.20.2-forge", 1_20_02, 'mojang')
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(java_version)
+    mc11605_forge.link(mc11701_forge, null)
+    mc11701_forge.link(mc11802_forge, null)
+    mc11802_forge.link(mc11902_forge, null)
+    mc11902_forge.link(mc11904_forge, file("versions/1.19.2-map2-1.19.4"))
+    mc11904_forge.link(mc12001_forge, null)
+    mc12001_forge.link(mc12002_forge, null)
 
-tasks.named('wrapper', Wrapper).configure {
-    distributionType = Wrapper.DistributionType.BIN
-}
+    var mc12002_neoforge = createNode("1.20.2-neoforge", 1_20_02, 'mojang')
+    var mc12004_neoforge = createNode("1.20.4-neoforge", 1_20_04, 'mojang')
+    var mc12006_neoforge = createNode("1.20.6-neoforge", 1_20_06, 'mojang')
+    var mc12101_neoforge = createNode("1.21.1-neoforge", 1_21_01, 'mojang')
+    var mc12104_neoforge = createNode("1.21.4-neoforge", 1_21_04, 'mojang')
+    var mc12108_neoforge = createNode("1.21.8-neoforge", 1_21_08, 'mojang')
+    var mc260102_neoforge = createNode("26.1-neoforge", 26_01_02, 'mojang')
+    var mc260200_neoforge = createNode("26.2-neoforge", 26_02_00, 'mojang')
 
-neoForge {
-    version = neo_version
+    mc12002_forge.link(mc12002_neoforge, file("versions/forge-map2-neoforge"))
+    mc12002_neoforge.link(mc12004_neoforge, null)
+    mc12004_neoforge.link(mc12006_neoforge, null)
+    mc12006_neoforge.link(mc12101_neoforge, null)
+    mc12101_neoforge.link(mc12104_neoforge, null)
+    mc12104_neoforge.link(mc12108_neoforge, null)
+    mc12108_neoforge.link(mc260102_neoforge, null)
+    mc260102_neoforge.link(mc260200_neoforge, null)
 
-    parchment {
-        minecraftVersion = minecraft_version
-        mappingsVersion = parchment_version
-    }
-
-    runs {
-        var isJbr = System.getProperty('java.vm.vendor').contains('JetBrains')
-
-        // applies to all the run configs below
-        configureEach {
-            // Recommended logging data for a userdev environment
-            // The markers can be added/remove as needed separated by commas.
-            // "SCAN": For mods scan.
-            // "REGISTRIES": For firing of registry events.
-            // "REGISTRYDUMP": For getting the contents of all registries.
-            systemProperty 'forge.logging.markers', 'REGISTRIES'
-
-            if (isJbr) {
-                jvmArgument "-XX:+AllowEnhancedClassRedefinition"
-            }
-
-            // Recommended logging level for the console
-            // You can set various levels here.
-            // Please read: https://stackoverflow.com/questions/2031163/when-to-use-the-different-log-levels
-            logLevel = org.slf4j.event.Level.DEBUG
+    for (final def node in getNodes()) {
+        findProject(node.project).ext.mcVersion = node.mcVersion
+        var modPlatform = "none"
+        if (node.project.endsWith("-fabric")) {
+            modPlatform = "fabric"
+        } else if (node.project.endsWith("-forge")) {
+            modPlatform = "forge"
+        } else if (node.project.endsWith("-neoforge")) {
+            modPlatform = "neoforge"
         }
-
-        client {
-            client()
-            // Comma-separated list of namespaces to load gametests from. Empty = all namespaces.
-            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
-        }
-
-        server {
-            server()
-            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
-        }
-
-        // This run config launches GameTestServer and runs all registered gametests, then exits.
-        // By default, the server will crash when no gametests are provided.
-        // The gametest system is also enabled by default for other run configs under the /test command.
-        gameTestServer {
-            type = "gameTestServer"
-            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
-        }
-    }
-
-    mods {
-        // define mod <-> source bindings
-        // these are used to tell the game which sources are for which mod
-        // mostly optional in a single mod project
-        // but multi mod projects should define one per mod
-        "${mod_id}" {
-            sourceSet(sourceSets.main)
-        }
+        findProject(node.project).ext.modPlatform = modPlatform
     }
 }
 
-repositories {
-    mavenLocal()
-    mavenCentral()
-}
+ext {
+    Map env = System.getenv()
+    File localPropsFile = file("${rootDir}/local.properties")
 
-dependencies {
-    implementation(jarJar("io.github.llamalad7:mixinextras-neoforge:0.5.0"))
-}
-
-// This block of code expands all declared replace properties in the specified resource targets.
-// A missing property will result in an error. Properties are expanded using ${} Groovy notation.
-// When "copyIdeResources" is enabled, this will also run before the game launches in IDE environments.
-// See https://docs.gradle.org/current/dsl/org.gradle.language.jvm.tasks.ProcessResources.html
-tasks.named('processResources', ProcessResources).configure {
-    var replaceProperties = [
-            minecraft_version      : minecraft_version,
-            minecraft_version_range: minecraft_version_range,
-            neo_version            : neo_version,
-            neo_version_range      : neo_version_range,
-            mod_id                 : mod_id,
-            mod_name               : mod_name,
-            mod_authors            : mod_authors,
-            mod_license            : mod_license,
-            mod_version            : mod_version,
-            mod_description        : mod_description
-    ]
-    inputs.properties replaceProperties
-
-    filesMatching(['META-INF/neoforge.mods.toml']) {
-        expand replaceProperties
+    if (localPropsFile.exists()) {
+        Properties p = new Properties()
+        p.load(new FileInputStream(localPropsFile))
+        p.each { key, value ->
+            ext[key as String] = value
+        }
     }
 
-    doLast {
-        def sourceFile = file("${destinationDir.path}/META-INF/neoforge.mods.toml")
-        def targetFile = file("${destinationDir.path}/META-INF/mods.toml")
+    getEnv = {
+        return env
+    }
 
-        if (sourceFile.exists()) {
-            // 复制并重命名文件
-            ant.copy(file: sourceFile, tofile: targetFile)
-            logger.lifecycle("Already copied ${sourceFile.name} to ${targetFile.name} for 1.20.2 supporting")
+    getOrDefault = { String key, String defaultValue ->
+        String value
+        (value = project.findProperty(key)) && !value.isEmpty() ? value : defaultValue
+    }
+
+    getVersionSuffix = {
+        String number = env.GITHUB_RUN_NUMBER ? env.GITHUB_RUN_NUMBER : 'x'
+        String type = env.VERSION_TYPE
+        switch (type) {
+            case 'release': return ''
+            case 'beta': return "+snapshot.${number}"
+            case 'alpha': return "+pr.${number}"
+            default: return "+build.${number}"
+        }
+    }
+
+    getVersion = { Project proj ->
+        return "${proj.property("mod.version")}${getVersionSuffix()}"
+    }
+}
+
+tasks.register("genLocalProperties") {
+    it.group("${project.property("mod.id")}")
+
+    doFirst {
+        File localPropsFile = file("${rootDir}/local.properties")
+
+        if (localPropsFile.exists()) {
+            throw new IllegalStateException("local.properties file already generated. If you want to regenerate it, please delete it manually first")
         } else {
-            logger.warn("${sourceFile.path} does not exist")
-        }
+            BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(localPropsFile))
+            bufferedWriter.writeLine("# Build environment configurations")
+            bufferedWriter.writeLine("ow.build.environment.local=")
+            bufferedWriter.writeLine("ow.build.environment.buildType=")
+            bufferedWriter.writeLine("ow.game.window.width=")
+            bufferedWriter.writeLine("ow.game.window.height=")
+            bufferedWriter.writeLine("ow.game.window.username=")
+            bufferedWriter.close()
 
-        def sourcePath = "src/main/java/zh/qiushui/mod/nieih/client/gui/"
-        sourceFile = file(sourcePath)
-        def targetPath = "${destinationDir.path}/zh/qiushui/mod/nieih/client/gui/"
-
-        if (sourceFile.exists()) {
-            for (final def file1 in sourceFile.listFiles()) {
-                if (!file1.name.endsWith(".class")) continue
-                targetFile = file("${targetPath}${file1.name}")
-                ant.copy(file: file1, tofile: targetFile)
-                logger.lifecycle("Already copied ${sourceFile.name} to ${targetFile.name} for 1.20.2 supporting")
-            }
-        } else {
-            logger.warn("${sourceFile.path} does not exist")
+            project.getLogger().info("local.properties generated successfully!")
         }
     }
 }
 
-tasks.register('sourcesJar', Jar) {
-    from delombok.outputs.files
-    dependsOn delombok
-    archiveClassifier = "sources"
+tasks.register("cleanPreprocessSources") {
+    it.group("${project.mod_id}")
+
+    doFirst {
+        subprojects {
+            def path = project.projectDir.toPath().resolve("build/preprocessed")
+            path.toFile().deleteDir()
+        }
+    }
 }
 
-artifacts {
-    archives tasks.jar
-    archives tasks.sourcesJar
+tasks.register("copyAllJars", Copy) {
+    var libs = it.rootSpec.addChild()
+    var devlibs = it.rootSpec.addChild()
+    subprojects.forEach { subproject ->
+        libs.from(subproject.layout.buildDirectory.dir("libs")) {
+            include("*.jar")
+        }
+        devlibs.from(subproject.layout.buildDirectory.dir("devlibs")) {
+            include("*.jar")
+        }
+    }
+    doFirst {
+        delete layout.buildDirectory.dir("libs")
+        delete layout.buildDirectory.dir("devlibs")
+    }
+    into(layout.buildDirectory)
+    libs.into("libs")
+    devlibs.into("devlibs")
+    it.with(libs, devlibs)
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
 }
-
-compileJava.options.encoding = 'UTF-8'
-
-idea.module {
-    downloadSources = true
-    downloadJavadoc = true
-}
-
-lombok.version = "1.18.34"
