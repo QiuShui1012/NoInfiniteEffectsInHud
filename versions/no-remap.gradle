@@ -58,6 +58,7 @@ loom {
         configureEach {
             // Dump modified classes automatically.
             systemProperties.put "mixin.debug.export", "true"
+            systemProperties.put "sun-misc-unsafe-memory-access", "allow"
             if (isJbr) jvmArguments.add "-XX:+AllowEnhancedClassRedefinition"
         }
     }
@@ -175,4 +176,4 @@ tasks.register("cleanRunServer", DefaultTask.class) {
     }
 }
 
-lombok.version = "1.18.44"
+lombok.version = "1.18.46"

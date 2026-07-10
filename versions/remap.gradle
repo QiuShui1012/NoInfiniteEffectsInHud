@@ -47,14 +47,16 @@ dependencies {
     mappings loom.officialMojangMappings()
 
     if (mcVersion == 1_20_01) {
-        implementation "curse.maven:composite-material-982540:8313603"
+        compileOnly "curse.maven:composite-material-982540:8313603"
     }
 
     switch (modPlatform) {
         case "forge":
             forge "net.minecraftforge:forge:${project.property("dependencies.minecraft_version")}-${project.property("dependencies.forge_version")}"
-            compileOnly annotationProcessor("io.github.llamalad7:mixinextras-common:0.5.4")
-            implementation include("io.github.llamalad7:mixinextras-forge:0.5.4")
+            if (mcVersion >= 1_17_01) {
+                compileOnly annotationProcessor("io.github.llamalad7:mixinextras-common:0.5.4")
+                implementation include("io.github.llamalad7:mixinextras-forge:0.5.4")
+            }
             break
         case "neoforge":
             neoForge "net.neoforged:neoforge:${project.property("dependencies.neoforge_version")}"
@@ -99,7 +101,7 @@ loom {
         configureEach {
             // Dump modified classes automatically.
             systemProperties.put "mixin.debug.export", "true"
-            if (isJbr) jvmArguments.add "-XX:+AllowEnhancedClassRedefinition"
+            if (isJbr && (mcVersion < 1_17_00 || mcVersion >= 1_18_00)) jvmArguments.add "-XX:+AllowEnhancedClassRedefinition"
         }
     }
 

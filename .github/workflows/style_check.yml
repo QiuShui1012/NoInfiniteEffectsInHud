@@ -30,7 +30,7 @@ jobs:
           reviewdog_version: latest
 
       - name: Download Check Style
-        run: curl -o checkstyle.jar -L https://github.com/checkstyle/checkstyle/releases/download/checkstyle-10.21.4/checkstyle-10.21.4-all.jar
+        run: curl -o checkstyle.jar -L https://github.com/checkstyle/checkstyle/releases/download/checkstyle-13.6.0/checkstyle-13.6.0-all.jar
 
       - name: Check Style
         env:

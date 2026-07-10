@@ -4,6 +4,8 @@
   "screen.nieih.confirm.desc": "Unsaved changed will be discard.",
   "screen.nieih.button.edit": "Edit...",
   "screen.nieih.button.reset": "Reset",
+  "screen.nieih.button.true": "True",
+  "screen.nieih.button.false": "False",
 
   "config.nieih.enabled": "Enabled",
   "config.nieih.enabled.desc": "Control the on/off of all functions in this mod",

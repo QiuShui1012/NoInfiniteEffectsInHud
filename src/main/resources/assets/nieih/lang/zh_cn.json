@@ -4,6 +4,8 @@
   "screen.nieih.confirm.desc": "未保存的更改将被丢弃。",
   "screen.nieih.button.edit": "编辑...",
   "screen.nieih.button.reset": "重置",
+  "screen.nieih.button.true": "开启",
+  "screen.nieih.button.false": "关闭",
 
   "config.nieih.enabled": "启用",
   "config.nieih.enabled.desc": "控制本模组功能的开关",

@@ -3,3 +3,4 @@ net.minecraftforge.fml.javafmlmod.FMLModContainer net.neoforged.fml.ModContainer
 net.minecraftforge.fml.ModLoadingContext net.neoforged.fml.ModLoadingContext
 net.minecraftforge.fml.config.ModConfig net.neoforged.fml.config.ModConfig
 net.minecraftforge.common.ForgeConfigSpec net.neoforged.neoforge.common.ModConfigSpec
+net.minecraftforge.client.ConfigScreenHandler net.neoforged.neoforge.client.ConfigScreenHandler
