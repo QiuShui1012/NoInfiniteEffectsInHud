@@ -10,6 +10,7 @@ import net.minecraftforge.fml.ExtensionPoint;
 //$$ import net.minecraftforge.fmlclient.ConfigGuiHandler;
 //#else
 //$$ import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
+//$$ import java.util.function.Supplier;
 //#endif
 
 //#if MC < 1_21_01
@@ -35,7 +36,10 @@ public class NoInfiniteEffectsInHUDClient {
         //$$     () -> new ConfigGuiHandler.ConfigGuiFactory((mc, screen) -> new ConfigScreen(screen))
         //$$ );
         //#else
-        //$$ ctx.registerExtensionPoint(IConfigScreenFactory.class, (mc, screen) -> new ConfigScreen(screen));
+        //$$ ctx.registerExtensionPoint(
+        //$$     IConfigScreenFactory.class,
+        //$$     (Supplier<IConfigScreenFactory>) () -> (mc, screen) -> new ConfigScreen(screen)
+        //$$ );
         //#endif
     }
 }
