@@ -4,3 +4,4 @@ net.minecraftforge.fml.ModLoadingContext net.neoforged.fml.ModLoadingContext
 net.minecraftforge.fml.config.ModConfig net.neoforged.fml.config.ModConfig
 net.minecraftforge.common.ForgeConfigSpec net.neoforged.neoforge.common.ModConfigSpec
 net.minecraftforge.client.ConfigScreenHandler net.neoforged.neoforge.client.ConfigScreenHandler
+net.minecraftforge.client.extensions.common.IClientMobEffectExtensions net.neoforged.neoforge.client.extensions.common.IClientMobEffectExtensions

@@ -34,7 +34,7 @@ preprocess {
     mc12002_forge.link(mc12002_neoforge, file("versions/forge-map2-neoforge"))
     mc12002_neoforge.link(mc12004_neoforge, null)
     mc12004_neoforge.link(mc12006_neoforge, null)
-    mc12006_neoforge.link(mc12101_neoforge, file("versions/1.20.6-map2-1.21.1"))
+    mc12006_neoforge.link(mc12101_neoforge, null)
     mc12101_neoforge.link(mc12104_neoforge, null)
     mc12104_neoforge.link(mc12108_neoforge, null)
     mc12108_neoforge.link(mc260102_neoforge, null)

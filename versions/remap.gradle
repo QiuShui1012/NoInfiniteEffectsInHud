@@ -139,7 +139,7 @@ processResources {
     inputs.property("java_version", java.sourceCompatibility.getMajorVersion())
 
     [
-        "pack.mcmeta"                 : ["forge"],
+        "pack.mcmeta"                 : ["forge", mcVersion < 12005 ? "neoforge" : "none"],
         "META-INF"                    : ["forge", "neoforge"],
         "META-INF/mods.toml"          : ["forge", mcVersion < 12005 ? "neoforge" : "none"],
         "META-INF/neoforge.mods.toml" : [mcVersion >= 12005 ? "neoforge" : "none"],

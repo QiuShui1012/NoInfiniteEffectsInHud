@@ -6,8 +6,10 @@ import net.minecraftforge.fml.config.ModConfig;
 
 //#if MC < 1_17_01
 import net.minecraftforge.fml.ExtensionPoint;
-//#else
+//#elseif MC < 1_20_06
 //$$ import net.minecraftforge.fmlclient.ConfigGuiHandler;
+//#else
+//$$ import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 //#endif
 
 //#if MC == 1_20_01
@@ -19,11 +21,14 @@ import net.minecraftforge.fml.ExtensionPoint;
 //$$ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 //#endif
 
+//#if MC >= 1_20_06
+//$$ import java.util.function.Supplier;
+//#endif
+
 //#if MC < 1_21_01
 import net.minecraftforge.fml.ModLoadingContext;
 //#else
 //$$ import net.neoforged.fml.ModContainer;
-//$$ import java.util.function.Supplier;
 //#endif
 
 @Mod(NoInfiniteEffectsInHUD.MOD_ID)
@@ -35,22 +40,25 @@ public class NoInfiniteEffectsInHUD {
     //#endif
     public NoInfiniteEffectsInHUD(
         //#if MC >= 1_21_01
-        //$$ ModContainer container
+        //$$ ModContainer ctx
         //#endif
     ) {
         //#if FORGE || MC < 1_21_01
         ModLoadingContext ctx = ModLoadingContext.get();
-        ctx.registerConfig(ModConfig.Type.CLIENT, Config.SPEC);
-        //#else
-        //$$ container.registerConfig(ModConfig.Type.CLIENT, Config.SPEC);
         //#endif
+        ctx.registerConfig(ModConfig.Type.CLIENT, Config.SPEC);
 
         //#if MC < 1_17_01
         ctx.registerExtensionPoint(ExtensionPoint.CONFIGGUIFACTORY, () -> (mc, screen) -> new ConfigScreen(screen));
-        //#else
+        //#elseif MC < 1_20_06
         //$$ ctx.registerExtensionPoint(
         //$$     ConfigGuiHandler.ConfigGuiFactory.class,
         //$$     () -> new ConfigGuiHandler.ConfigGuiFactory((mc, screen) -> new ConfigScreen(screen))
+        //$$ );
+        //#else
+        //$$ ctx.registerExtensionPoint(
+        //$$     IConfigScreenFactory.class,
+        //$$     (Supplier<IConfigScreenFactory>) () -> (mc, screen) -> new ConfigScreen(screen)
         //$$ );
         //#endif
     }

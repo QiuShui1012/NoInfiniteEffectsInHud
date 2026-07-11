@@ -28,8 +28,11 @@ public class GuiMixin {
             target = "Lnet/minecraft/world/effect/MobEffectInstance;shouldRenderHUD()Z"
             //#elseif MC < 1_19_00
             //$$ target = "Lnet/minecraftforge/client/EffectRenderer;shouldRenderHUD(Lnet/minecraft/world/effect/MobEffectInstance;)Z",
-            //#else
+            //#elseif FORGE
             //$$ target = "Lnet/minecraftforge/client/extensions/common/IClientMobEffectExtensions;"
+            //$$          + "isVisibleInGui(Lnet/minecraft/world/effect/MobEffectInstance;)Z",
+            //#else
+            //$$ target = "Lnet/neoforged/neoforge/client/extensions/common/IClientMobEffectExtensions;"
             //$$          + "isVisibleInGui(Lnet/minecraft/world/effect/MobEffectInstance;)Z",
             //#endif
 
