@@ -132,7 +132,7 @@ tasks.named("runServer") {
 
     doFirst {
         // Agree eula before server init.
-        file("${project.projectDir}/run/server/eula.txt").with { File f -> {
+        file("${project.projectDir}/runs/server/eula.txt").with { File f -> {
             if (!f.exists()) {
                 f.parentFile.mkdirs()
                 f.withWriter { BufferedWriter writer ->
