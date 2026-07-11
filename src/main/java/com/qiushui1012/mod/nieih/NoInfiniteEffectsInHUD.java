@@ -1,25 +1,13 @@
 package com.qiushui1012.mod.nieih;
 
-import com.qiushui1012.mod.nieih.client.gui.ConfigScreen;
+import com.qiushui1012.mod.nieih.client.NoInfiniteEffectsInHUDClient;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
-
-import java.util.function.Supplier;
-
-//#if MC < 1_17_01
-import net.minecraftforge.fml.ExtensionPoint;
-//#elseif MC < 1_20_06
-//$$ import net.minecraftforge.fmlclient.ConfigGuiHandler;
-//#else
-//$$ import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
-//#endif
+import net.minecraftforge.fml.loading.FMLLoader;
 
 //#if MC == 1_20_01
 //$$ import com.qiushui1012.mod.nieih.integration.compositematerial.CMCompat;
-//$$ import net.minecraftforge.api.distmarker.Dist;
 //$$ import net.minecraftforge.eventbus.api.SubscribeEvent;
 //$$ import net.minecraftforge.fml.DistExecutor;
 //$$ import net.minecraftforge.fml.ModList;
@@ -49,39 +37,14 @@ public class NoInfiniteEffectsInHUD {
         //#endif
         ctx.registerConfig(ModConfig.Type.CLIENT, Config.SPEC);
 
-        // noinspection Convert2Lambda
-        DistExecutor.unsafeRunWhenOn(
-            Dist.CLIENT,
-            new Supplier<Runnable>() {
-                @Override
-                public Runnable get() {
-                    return () -> NoInfiniteEffectsInHUD.registerConfigScreen(ctx);
-                }
-            }
-        );
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    private static void registerConfigScreen(
-        //#if MC < 1_21_01
-        ModLoadingContext ctx
+        //#if MC < 26_01_00
+        Dist current = FMLLoader.getDist();
         //#else
-        //$$ ModContainer ctx
+        //$$ Dist current = FMLLoader.getCurrent().getDist();
         //#endif
-    ) {
-        //#if MC < 1_17_01
-        ctx.registerExtensionPoint(ExtensionPoint.CONFIGGUIFACTORY, () -> (mc, screen) -> new ConfigScreen(screen));
-        //#elseif MC < 1_20_06
-        //$$ ctx.registerExtensionPoint(
-        //$$     ConfigGuiHandler.ConfigGuiFactory.class,
-        //$$     () -> new ConfigGuiHandler.ConfigGuiFactory((mc, screen) -> new ConfigScreen(screen))
-        //$$ );
-        //#else
-        //$$ ctx.registerExtensionPoint(
-        //$$     IConfigScreenFactory.class,
-        //$$     (Supplier<IConfigScreenFactory>) () -> (mc, screen) -> new ConfigScreen(screen)
-        //$$ );
-        //#endif
+        if (current.isClient()) {
+            NoInfiniteEffectsInHUDClient.registerConfigScreen(ctx);
+        }
     }
 
     //#if MC == 1_20_01
