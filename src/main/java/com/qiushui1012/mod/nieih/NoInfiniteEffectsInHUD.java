@@ -1,6 +1,8 @@
 package com.qiushui1012.mod.nieih;
 
 import com.qiushui1012.mod.nieih.client.gui.ConfigScreen;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 
@@ -27,6 +29,8 @@ import net.minecraftforge.fml.ExtensionPoint;
 
 //#if MC < 1_21_01
 import net.minecraftforge.fml.ModLoadingContext;
+
+import java.util.function.Supplier;
 //#else
 //$$ import net.neoforged.fml.ModContainer;
 //#endif
@@ -48,6 +52,27 @@ public class NoInfiniteEffectsInHUD {
         //#endif
         ctx.registerConfig(ModConfig.Type.CLIENT, Config.SPEC);
 
+        // noinspection Convert2Lambda
+        DistExecutor.unsafeRunWhenOn(
+            Dist.CLIENT,
+            new Supplier<Runnable>() {
+                @Override
+                public Runnable get() {
+                    return () -> {
+                        NoInfiniteEffectsInHUD.registerConfigScreen(ctx);
+                    };
+                }
+            }
+        );
+    }
+
+    private static void registerConfigScreen(
+        //#if MC < 1_21_01
+        ModLoadingContext ctx
+        //#else
+        //$$ ModContainer ctx
+        //#endif
+    ) {
         //#if MC < 1_17_01
         ctx.registerExtensionPoint(ExtensionPoint.CONFIGGUIFACTORY, () -> (mc, screen) -> new ConfigScreen(screen));
         //#elseif MC < 1_20_06
