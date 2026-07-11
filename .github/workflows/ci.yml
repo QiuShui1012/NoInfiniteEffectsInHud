@@ -14,6 +14,7 @@ on:
       - src/**
       - versions/*/src/**
       - versions/*/gradle.properties
+      - versions/*-map2-*
       - versions/no-remap.gradle
       - versions/remap.gradle
       - build.gradle
