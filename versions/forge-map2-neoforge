@@ -7,3 +7,4 @@ net.minecraftforge.client.ConfigScreenHandler net.neoforged.neoforge.client.Conf
 net.minecraftforge.client.extensions.common.IClientMobEffectExtensions net.neoforged.neoforge.client.extensions.common.IClientMobEffectExtensions
 net.minecraftforge.api.distmarker.Dist net.neoforged.api.distmarker.Dist
 net.minecraftforge.fml.DistExecutor com.qiushui1012.mod.nieih.util.DistExecutor
+net.minecraftforge.api.distmarker.OnlyIn net.neoforged.api.distmarker.OnlyIn
